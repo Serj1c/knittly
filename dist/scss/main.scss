@@ -1,6 +1,9 @@
-@import "config";
-@import "menu";
-@import "mobile";
+/* General */
+$primary-color: #444;
+$secondary-color: orange;
+$show-home-image: true;
+$home-image: url(../pics/background.jpg);
+$background-opacity: 0.7;
 
 * {
   box-sizing: border-box;
@@ -15,6 +18,139 @@ body {
   color: set-text-color($primary-color);
 }
 
+@mixin easeOut {
+  transition: all 0.5s ease-out;
+}
+@mixin background {
+  @if $show-home-image {
+    &#bg-img {
+      background: $home-image;
+      background-attachment: fixed;
+      background-size: cover;
+
+      &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: rgba($primary-color, $background-opacity);
+      }
+    }
+  }
+}
+
+// Set colors
+@function set-text-color($color) {
+  @if (lightness($color) > 40) {
+    @return #000;
+  } @else {
+    @return #fff;
+  }
+}
+
+// Media Query Mixins
+@mixin MediaSm {
+  @media screen and (max-width: 375px) {
+    @content;
+  }
+}
+@mixin MediaMd {
+  @media screen and (max-width: 768px) {
+    @content;
+  }
+}
+@mixin MediaLg {
+  @media screen and (min-width: 769px) and (max-width: 1170px) {
+    @content;
+  }
+}
+@mixin MediaXl {
+  @media screen and (min-width: 1171px) {
+    @content;
+  }
+}
+
+/* Media */
+//Widescreens
+@include MediaXl {
+  .projects {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+//Desktops & Laptops
+@include MediaLg {
+  .projects {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+//Tablets & Small laptops
+@include MediaMd {
+  main {
+    align-content: center;
+    text-align: center;
+
+    .lg-heading {
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+  }
+
+  ul.menu-nav,
+  div.menu-branding {
+    float: none;
+    width: 100%;
+    min-height: 0;
+
+    &.show {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .menu-nav {
+    height: 75vh;
+    transform: translate3d(-100%, 0, 0);
+    font-size: 24px;
+  }
+  .menu-branding {
+    height: 25vh;
+    transform: translate3d(100%, 0, 0);
+
+    .portrait {
+      background: url();
+      width: 150px;
+      height: 150px;
+    }
+  }
+
+  .info-about {
+    grid-template-areas:
+      "bioimage"
+      "bio"
+      "bio"
+      "job1"
+      "job2"
+      "job3";
+    grid-template-columns: 1fr;
+  }
+  .projects {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+//Smartphones
+@include MediaSm {
+  main#home h1 {
+    margin-top: 10vh;
+  }
+  .projects {
+    grid-template-columns: 1fr;
+  }
+}
+// ==============
+
 h1,
 h2,
 h3 {
@@ -23,7 +159,7 @@ h3 {
     font-size: 4rem;
   }
   &.sm-heading {
-    margin-bottom: 2rem;
+    margin-bottom: 5rem;
     padding: 0.2rem 1rem;
   }
 }
@@ -97,13 +233,12 @@ main {
 }*/
 
 //Work / Projects area
-
 .projects {
   display: grid;
   grid-gap: 2rem;
   grid-template-columns: repeat(3, 1fr);
   img {
-    width: 100;
+    width: 100%;
     border: 3px solid #fff;
 
     &:hover {
@@ -141,7 +276,6 @@ main {
 }
 
 //Styles for buttons
-
 .btn {
   display: block;
   padding: 0.5rem 1rem;
@@ -171,4 +305,136 @@ main {
   background: darken($primary-color, 10);
   color: set-text-color($primary-color);
   height: 60px;
+}
+
+// ==============
+
+.menu-btn {
+  position: absolute;
+  z-index: 3;
+  right: 35px;
+  top: 35px;
+  cursor: pointer;
+  @include easeOut;
+
+  .btn-line {
+      width: 28px;
+      height: 3px;
+      margin: 0 0 5px 0;
+      background: set-text-color($primary-color);
+      @include easeOut;
+  }
+
+  // Rotate into X sign
+  &.close {
+      transform: rotate(180deg);
+
+      .btn-line {
+          // first line to move
+          &:nth-child(1) {
+              transform: rotate(45deg) translate(5px, 5px);
+          }
+          // second line to hide
+          &:nth-child(2) {
+              opacity: 0;
+          }
+          // thrid child to move
+          &:nth-child(3) {
+              transform: rotate(-45deg) translate(7px, -6px);
+          }
+      }   
+  }
+}
+// Menu page
+.menu {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  opacity: 0.9;
+  visibility: hidden;
+
+  &.show {
+      visibility: visible;
+  }
+
+  &-branding,
+  &-nav {
+      display: flex;
+      flex-flow: column wrap;
+      align-items: center;
+      justify-content: center;
+      float: left;
+      width: 50%;
+      height: 100vh;
+      overflow: hidden;
+  }
+  //Navigation side
+  &-nav {
+      margin: 0;
+      padding: 0;
+      background: darken($primary-color, 5);
+      list-style: none;
+      transform: translate3d(0, -100%, 0);
+      @include easeOut;
+
+      //slide from the top
+      &.show {
+          transform: translate3d(0, 0, 0);
+      }
+  }
+  // Branding side
+  &-branding {
+      background: darken($primary-color, 3);
+      transform: translate3d(0, 100%, 0);
+      @include easeOut;
+      
+      //slide from the bottom
+      &.show {
+          transform: translate3d(0, 0, 0);
+      }
+
+      .portrait {
+          width: 250px;
+          height: 250px;
+          background: url();
+          border-radius: 50%;
+          border: solid 3px $secondary-color;
+      }
+  }
+  .nav-item {
+      transform: translate3d(600px, 0, 0);
+      @include easeOut;
+
+       //slide from the right
+       &.show {
+          transform: translate3d(0, 0, 0);
+      }
+      &.current > a {
+          color: $secondary-color;
+      }
+      
+  }
+
+  .nav-link {
+      display: inline-block;
+      position: relative;
+      text-transform: uppercase;
+      font-size: 30px;
+      padding: 1rem 0;
+      font-weight: 300;
+      color: set-text-color($primary-color);
+      text-decoration: none;
+      @include easeOut;
+
+      &:hover {
+          color: $secondary-color;
+      }
+  }
+
+  // Delay each menu-nav link
+  @for $x from 1 through 4 {
+      .nav-item:nth-child(#{$x}) {
+          transition-delay: $x * 0.1s;
+      }
+  }
 }

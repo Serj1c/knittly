@@ -5,8 +5,7 @@
   "main": "index.js",
   "homepage": "https://Serj1c.github.io/portfolio_1",
   "scripts": {
-    "sass": "node-sass -w dist/scss/ -o dist/css/ --recursive",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d src"
   },
   "author": "Sergej Isaev",
   "license": "ISC",
