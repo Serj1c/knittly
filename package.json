@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "tiny knitted world web page",
   "main": "index.js",
-  "homepage": "https://Serj1c.github.io/portfolio_1",
   "scripts": {
     "deploy": "gh-pages -d src"
   },
